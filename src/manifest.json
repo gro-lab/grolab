@@ -5,7 +5,6 @@
   "description": "AI-powered web browsing assistant with smart automation",
   "author": "GroLab",
   "homepage_url": "https://grolab.work/ai-browser-extension",
-
   "permissions": [
     "activeTab",
     "scripting",
@@ -15,30 +14,31 @@
     "alarms",
     "webNavigation"
   ],
-
   "host_permissions": [
     "<all_urls>"
   ],
-
   "background": {
     "service_worker": "background.js",
     "type": "module"
   },
-
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "css": ["content.css"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
       "run_at": "document_idle",
       "all_frames": false
     }
   ],
-
   "side_panel": {
     "default_path": "sidepanel.html"
   },
-
   "action": {
     "default_title": "Open AI Assistant",
     "default_icon": {
@@ -47,20 +47,21 @@
       "128": "icons/icon128.png"
     }
   },
-
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-
   "web_accessible_resources": [
     {
-      "resources": ["config.js"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "config.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ],
-
   "commands": {
     "_execute_action": {
       "suggested_key": {
@@ -75,5 +76,8 @@
       },
       "description": "Toggle AI Assistant Side Panel"
     }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://api.openai.com https://api.anthropic.com http://localhost:11434"
   }
 }
