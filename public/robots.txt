@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://grolab.work/sitemap.xml

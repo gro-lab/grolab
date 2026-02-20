@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Grolab — Redirecting</title>
+    <!--
+      GitHub Pages SPA redirect trick.
+      Stores the path in sessionStorage and redirects to index.html,
+      where the Vue Router picks up the intended route.
+    -->
+    <script>
+      sessionStorage.setItem('grolab-redirect', window.location.pathname)
+      window.location.replace('/')
+    </script>
+  </head>
+  <body>
+    <p>Redirecting…</p>
+  </body>
+</html>
