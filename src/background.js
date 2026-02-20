@@ -6,11 +6,11 @@
 import { AIClient } from './ai-client.js';
 import { StorageManager } from './utils.js';
 
-// Configuration
 const CONFIG = {
   MAX_HISTORY_PER_TAB: 20,
-  CONTEXT_REFRESH_INTERVAL: 5 * 60 * 1000, // 5 minutes
-  DEFAULT_MODEL: 'gpt-4-turbo-preview'
+  CONTEXT_REFRESH_INTERVAL: 5 * 60 * 1000,
+  DEFAULT_MODEL: 'gpt-4-turbo-preview',
+  STALE_SESSION_MS: 60 * 60 * 1000
 };
 
 class AIBrowserAssistant {
@@ -23,8 +23,7 @@ class AIBrowserAssistant {
 
   async init() {
     if (this.initialized) return;
-    
-    // Load API configuration
+
     const config = await this.storage.get('ai_config');
     if (config?.apiKey) {
       this.ai = new AIClient({
@@ -33,7 +32,7 @@ class AIBrowserAssistant {
         model: config.model || CONFIG.DEFAULT_MODEL
       });
     }
-    
+
     this.setupListeners();
     this.setupAlarms();
     this.initialized = true;
@@ -41,34 +40,31 @@ class AIBrowserAssistant {
   }
 
   setupListeners() {
-    // Message routing
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-      this.handleMessage(request, sender).then(sendResponse).catch(error => {
-        console.error('[AI Assistant] Error:', error);
-        sendResponse({ error: error.message });
-      });
-      return true; // Keep channel open for async
+      this.handleMessage(request, sender)
+        .then(sendResponse)
+        .catch(error => {
+          console.error('[AI Assistant] Error:', error);
+          sendResponse({ error: error.message });
+        });
+      return true;
     });
 
-    // Tab lifecycle
     chrome.tabs.onRemoved.addListener((tabId) => this.cleanupTab(tabId));
     chrome.tabs.onActivated.addListener(({ tabId }) => this.updateActiveContext(tabId));
-    
-    // Navigation tracking
+
     chrome.webNavigation.onCompleted.addListener((details) => {
       if (details.frameId === 0) {
         this.handleNavigation(details.tabId, details.url);
       }
     });
 
-    // Installation
     chrome.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'install') {
         chrome.tabs.create({ url: 'https://grolab.work/ai-browser-extension/install' });
       }
     });
 
-    // Keyboard shortcuts
     chrome.commands.onCommand.addListener((command) => {
       if (command === 'toggle_side_panel') {
         this.toggleSidePanel();
@@ -77,7 +73,6 @@ class AIBrowserAssistant {
   }
 
   setupAlarms() {
-    // Periodic cleanup
     chrome.alarms.create('session-cleanup', { periodInMinutes: 30 });
     chrome.alarms.onAlarm.addListener((alarm) => {
       if (alarm.name === 'session-cleanup') {
@@ -88,55 +83,52 @@ class AIBrowserAssistant {
 
   async handleMessage(request, sender) {
     const tabId = sender.tab?.id || request.tabId || (await this.getActiveTab())?.id;
-    
-    // Ensure initialized
+
     if (!this.initialized) await this.init();
-    
-    // Check if AI is configured
-    if (!this.ai && request.action !== 'get_config' && request.action !== 'set_config') {
+
+    // Config actions don't need AI
+    if (request.action === 'get_config') {
+      return (await this.storage.get('ai_config')) || {};
+    }
+    if (request.action === 'set_config') {
+      await this.updateConfig(request.config);
+      return { success: true };
+    }
+    if (request.action === 'clear_history') {
+      this.sessions.delete(tabId);
+      return { success: true };
+    }
+    if (request.action === 'get_history') {
+      return { history: this.sessions.get(tabId)?.history || [] };
+    }
+    if (request.action === 'dom_changed') {
+      return { acknowledged: true };
+    }
+
+    // Everything else needs AI
+    if (!this.ai) {
       return { error: 'AI not configured. Please set API key in settings.' };
     }
 
     switch (request.action) {
       case 'chat':
         return this.handleChat(tabId, request.message, request.pageContext);
-      
       case 'analyze_page':
         return this.analyzePage(tabId);
-      
       case 'execute_action':
         return this.executeAction(tabId, request.actionData);
-      
       case 'get_page_structure':
         return this.getPageStructure(tabId);
-      
       case 'summarize':
-        return this.summarizePage(tabId);
-      
+        return this.summarizePage(tabId, request.pageContext);
       case 'extract_data':
-        return this.extractData(tabId, request.schema);
-      
-      case 'get_config':
-        return this.storage.get('ai_config');
-      
-      case 'set_config':
-        await this.updateConfig(request.config);
-        return { success: true };
-      
-      case 'clear_history':
-        this.sessions.delete(tabId);
-        return { success: true };
-      
-      case 'get_history':
-        return { history: this.sessions.get(tabId)?.history || [] };
-      
+        return this.extractPageData(tabId, request.schema, request.pageContext);
       default:
         throw new Error(`Unknown action: ${request.action}`);
     }
   }
 
   async handleChat(tabId, message, pageContext) {
-    // Initialize session
     if (!this.sessions.has(tabId)) {
       this.sessions.set(tabId, {
         history: [],
@@ -144,17 +136,13 @@ class AIBrowserAssistant {
         lastActivity: Date.now()
       });
     }
-    
+
     const session = this.sessions.get(tabId);
     session.lastActivity = Date.now();
 
-    // Build system prompt
     const systemPrompt = this.buildSystemPrompt(pageContext);
-    
-    // Add user message
     session.history.push({ role: 'user', content: message });
 
-    // Call AI with tools
     const response = await this.ai.complete({
       system: systemPrompt,
       messages: session.history,
@@ -162,16 +150,14 @@ class AIBrowserAssistant {
       temperature: 0.7
     });
 
-    // Handle tool execution
     if (response.tool_calls?.length > 0) {
       const results = await this.executeToolCalls(tabId, response.tool_calls);
-      
-      // Send results back to AI
+
       const finalResponse = await this.ai.complete({
         system: systemPrompt,
         messages: [
           ...session.history,
-          { role: 'assistant', content: response.content, tool_calls: response.tool_calls },
+          { role: 'assistant', content: response.content || '', tool_calls: response.tool_calls },
           ...results.map((r, i) => ({
             role: 'tool',
             tool_call_id: response.tool_calls[i].id,
@@ -179,12 +165,12 @@ class AIBrowserAssistant {
           }))
         ]
       });
-      
+
       session.history.push({ role: 'assistant', content: finalResponse.content });
       this.trimHistory(session);
-      
-      return { 
-        response: finalResponse.content, 
+
+      return {
+        response: finalResponse.content,
         actions: results,
         usedTools: response.tool_calls.map(t => t.function.name)
       };
@@ -192,30 +178,94 @@ class AIBrowserAssistant {
 
     session.history.push({ role: 'assistant', content: response.content });
     this.trimHistory(session);
-    
+
     return { response: response.content };
   }
 
+  async summarizePage(tabId, pageContext) {
+    const structure = pageContext || await this.getPageStructure(tabId);
+    const bodyText = structure?.textContent?.body || '';
+
+    if (!bodyText || bodyText.length < 50) {
+      return { response: 'Not enough content on this page to summarize.' };
+    }
+
+    const result = await this.ai.complete({
+      system: 'You are a concise summarizer. Provide clear, well-structured summaries.',
+      messages: [{
+        role: 'user',
+        content: `Summarize the main content of this page in 3-5 bullet points:\n\nTitle: ${structure.title || 'Unknown'}\nURL: ${structure.url || 'Unknown'}\n\nContent:\n${bodyText}`
+      }],
+      temperature: 0.3
+    });
+
+    return { response: result.content };
+  }
+
+  async extractPageData(tabId, schema, pageContext) {
+    if (schema) {
+      try {
+        const result = await chrome.tabs.sendMessage(tabId, {
+          action: 'execute_tool',
+          tool: 'extract_data',
+          params: { schema }
+        });
+        return result;
+      } catch (error) {
+        return { success: false, error: error.message };
+      }
+    }
+
+    const structure = pageContext || await this.getPageStructure(tabId);
+    const result = await this.ai.complete({
+      system: 'Extract all structured data (names, dates, prices, emails, addresses, phone numbers) from the page content. Return as a clear, organized list.',
+      messages: [{
+        role: 'user',
+        content: `Extract data from:\n\nTitle: ${structure?.title}\nURL: ${structure?.url}\n\nContent:\n${structure?.textContent?.body || ''}`
+      }],
+      temperature: 0.2
+    });
+
+    return { response: result.content };
+  }
+
   buildSystemPrompt(pageContext) {
-    return `You are an AI web browsing assistant. You help users navigate, understand, and interact with web pages.
+    let prompt = `You are an AI web browsing assistant. You help users navigate, understand, and interact with web pages.
 
 Current page: ${pageContext?.title || 'Unknown'}
-URL: ${pageContext?.url || 'Unknown'}
+URL: ${pageContext?.url || 'Unknown'}`;
 
-You can:
+    if (pageContext?.structure) {
+      prompt += `\n\nPage info:
+- Has login form: ${pageContext.structure.hasLoginForm}
+- Has search: ${pageContext.structure.hasSearch}
+- Content areas: ${pageContext.structure.contentAreas}
+- Interactive elements: ${pageContext.interactive?.total || 0}
+- Forms: ${pageContext.forms?.length || 0}`;
+    }
+
+    if (pageContext?.headings?.length > 0) {
+      prompt += '\n\nPage headings:\n' + pageContext.headings
+        .slice(0, 10)
+        .map(h => `${'  '.repeat(h.level - 1)}H${h.level}: ${h.text}`)
+        .join('\n');
+    }
+
+    prompt += `\n\nYou can use tools to:
 - Click elements by description
 - Fill form fields
 - Scroll pages
 - Find and highlight text
 - Extract structured data
-- Answer questions about page content
+- Navigate to URLs
 
-When suggesting actions:
-1. Explain what you will do
-2. Use tools to execute actions
+Instructions:
+1. Explain what you will do before using tools
+2. Use the most specific selector or description available
 3. Confirm success or explain failures
+4. Be concise, helpful, and accurate`;
 
-Be concise, helpful, and accurate. If uncertain, ask for clarification.`;
+    return prompt;
   }
 
   getAvailableTools() {
@@ -224,17 +274,17 @@ Be concise, helpful, and accurate. If uncertain, ask for clarification.`;
         type: 'function',
         function: {
           name: 'click_element',
-          description: 'Click on a button, link, or interactive element',
+          description: 'Click on a button, link, or interactive element on the page',
           parameters: {
             type: 'object',
             properties: {
-              description: { 
-                type: 'string', 
-                description: 'Description of element to click (e.g., "Submit button", "Read more link")' 
+              description: {
+                type: 'string',
+                description: 'Human-readable description of the element to click (e.g., "Submit button", "Read more link")'
               },
-              selector: { 
-                type: 'string', 
-                description: 'CSS selector if known (optional)' 
+              selector: {
+                type: 'string',
+                description: 'CSS selector if known (optional, more reliable than description)'
               }
             },
             required: ['description']
@@ -245,21 +295,21 @@ Be concise, helpful, and accurate. If uncertain, ask for clarification.`;
         type: 'function',
         function: {
           name: 'fill_form',
-          description: 'Fill a form input field with text',
+          description: 'Fill a form input, textarea, or select field with a value',
           parameters: {
             type: 'object',
             properties: {
-              field_description: { 
-                type: 'string', 
-                description: 'Description of the field (e.g., "Email input", "Search box")' 
+              field_description: {
+                type: 'string',
+                description: 'Description of the field (e.g., "Email input", "Search box", "Country dropdown")'
               },
-              value: { 
-                type: 'string', 
-                description: 'Text to enter' 
+              value: {
+                type: 'string',
+                description: 'Text to enter or option to select'
               },
-              selector: { 
-                type: 'string', 
-                description: 'CSS selector if known (optional)' 
+              selector: {
+                type: 'string',
+                description: 'CSS selector if known (optional)'
               }
             },
             required: ['field_description', 'value']
@@ -270,18 +320,18 @@ Be concise, helpful, and accurate. If uncertain, ask for clarification.`;
         type: 'function',
         function: {
           name: 'scroll_page',
-          description: 'Scroll the page up or down',
+          description: 'Scroll the page in a given direction',
           parameters: {
             type: 'object',
             properties: {
-              direction: { 
-                type: 'string', 
+              direction: {
+                type: 'string',
                 enum: ['up', 'down', 'top', 'bottom'],
-                description: 'Direction to scroll' 
+                description: 'Scroll direction'
               },
-              amount: { 
-                type: 'number', 
-                description: 'Pixels to scroll (default: 500)' 
+              amount: {
+                type: 'number',
+                description: 'Pixels to scroll (default: 500, ignored for top/bottom)'
               }
             },
             required: ['direction']
@@ -292,17 +342,17 @@ Be concise, helpful, and accurate. If uncertain, ask for clarification.`;
         type: 'function',
         function: {
           name: 'find_text',
-          description: 'Find and highlight specific text on the page',
+          description: 'Find and highlight all occurrences of text on the page, scrolling to the first match',
           parameters: {
             type: 'object',
             properties: {
-              query: { 
-                type: 'string', 
-                description: 'Text to search for' 
+              query: {
+                type: 'string',
+                description: 'Text to search for (minimum 2 characters)'
               },
-              case_sensitive: { 
+              case_sensitive: {
                 type: 'boolean',
-                description: 'Case sensitive search (default: false)'
+                description: 'Whether the search is case-sensitive (default: false)'
               }
             },
             required: ['query']
@@ -313,13 +363,13 @@ Be concise, helpful, and accurate. If uncertain, ask for clarification.`;
         type: 'function',
         function: {
           name: 'extract_data',
-          description: 'Extract structured data from the page based on a schema',
+          description: 'Extract structured data from the page using CSS selectors',
           parameters: {
             type: 'object',
             properties: {
               schema: {
                 type: 'object',
-                description: 'JSON schema describing what data to extract'
+                description: 'Object where keys are field names and values define how to extract: { selector: string, attribute?: "text"|"href"|"src"|"value"|attr, multiple?: boolean, transform?: "number"|"date"|"trim" }'
               }
             },
             required: ['schema']
@@ -330,13 +380,13 @@ Be concise, helpful, and accurate. If uncertain, ask for clarification.`;
         type: 'function',
         function: {
           name: 'navigate',
-          description: 'Navigate to a different URL',
+          description: 'Navigate the current tab to a different URL',
           parameters: {
             type: 'object',
             properties: {
-              url: { 
-                type: 'string', 
-                description: 'URL to navigate to' 
+              url: {
+                type: 'string',
+                description: 'Full URL to navigate to (must include protocol)'
               }
             },
             required: ['url']
@@ -348,54 +398,64 @@ Be concise, helpful, and accurate. If uncertain, ask for clarification.`;
 
   async executeToolCalls(tabId, toolCalls) {
     const results = [];
-    
+
     for (const call of toolCalls) {
       try {
+        let params;
+        try {
+          params = JSON.parse(call.function.arguments);
+        } catch {
+          params = {};
+        }
+
         const result = await chrome.tabs.sendMessage(tabId, {
           action: 'execute_tool',
           tool: call.function.name,
-          params: JSON.parse(call.function.arguments),
+          params,
           toolCallId: call.id
         });
         results.push(result);
       } catch (error) {
-        results.push({ 
-          success: false, 
+        results.push({
+          success: false,
           error: error.message,
-          tool: call.function.name 
+          tool: call.function.name
         });
       }
     }
-    
+
     return results;
   }
 
   async getPageStructure(tabId) {
     try {
       return await chrome.tabs.sendMessage(tabId, { action: 'get_structure' });
-    } catch (error) {
-      // Content script not loaded, inject it
-      await chrome.scripting.executeScript({
-        target: { tabId },
-        files: ['content.js']
-      });
-      // Retry
-      return await chrome.tabs.sendMessage(tabId, { action: 'get_structure' });
+    } catch {
+      try {
+        await chrome.scripting.executeScript({
+          target: { tabId },
+          files: ['content.js']
+        });
+        return await chrome.tabs.sendMessage(tabId, { action: 'get_structure' });
+      } catch (retryError) {
+        return { url: 'unknown', title: 'unknown', error: retryError.message };
+      }
     }
   }
 
   async analyzePage(tabId) {
     const structure = await this.getPageStructure(tabId);
-    
+
     const analysis = await this.ai.complete({
-      system: 'Analyze this webpage structure and provide insights.',
+      system: 'Analyze this webpage structure concisely. Identify: page purpose, key interactive elements, forms, navigation structure, and any notable features.',
       messages: [{
         role: 'user',
-        content: `Analyze this page structure:\n${JSON.stringify(structure, null, 2)}`
-      }]
+        content: `Analyze this page:\n${JSON.stringify(structure, null, 2)}`
+      }],
+      temperature: 0.3
     });
-    
-    return analysis;
+
+    return { response: analysis.content, structure };
   }
 
   async executeAction(tabId, actionData) {
@@ -407,13 +467,7 @@ Be concise, helpful, and accurate. If uncertain, ask for clarification.`;
 
   trimHistory(session) {
     if (session.history.length > CONFIG.MAX_HISTORY_PER_TAB) {
-      // Keep system message if exists, then last N exchanges
-      const systemIdx = session.history.findIndex(m => m.role === 'system');
-      const startIdx = systemIdx >= 0 ? systemIdx + 1 : 0;
-      session.history = [
-        ...session.history.slice(startIdx, startIdx + 1),
-        ...session.history.slice(-(CONFIG.MAX_HISTORY_PER_TAB - 1))
-      ];
+      session.history = session.history.slice(-CONFIG.MAX_HISTORY_PER_TAB);
     }
   }
 
@@ -423,32 +477,27 @@ Be concise, helpful, and accurate. If uncertain, ask for clarification.`;
 
   cleanupStaleSessions() {
     const now = Date.now();
-    const staleThreshold = 60 * 60 * 1000; // 1 hour
-    
     for (const [tabId, session] of this.sessions.entries()) {
-      if (now - session.lastActivity > staleThreshold) {
+      if (now - session.lastActivity > CONFIG.STALE_SESSION_MS) {
         this.sessions.delete(tabId);
       }
     }
   }
 
-  async handleNavigation(tabId, url) {
+  handleNavigation(tabId, url) {
     const session = this.sessions.get(tabId);
     if (session) {
       session.pageContext = { url, timestamp: Date.now() };
-      // Optional: Add navigation context to history
-      session.history.push({
-        role: 'system',
-        content: `User navigated to: ${url}`
-      });
     }
   }
 
   async updateActiveContext(tabId) {
     try {
       const tab = await chrome.tabs.get(tabId);
-      this.handleNavigation(tabId, tab.url);
-    } catch (e) {
+      if (tab?.url) {
+        this.handleNavigation(tabId, tab.url);
+      }
+    } catch {
       // Tab may not exist
     }
   }
@@ -459,23 +508,26 @@ Be concise, helpful, and accurate. If uncertain, ask for clarification.`;
   }
 
   async toggleSidePanel() {
-    await chrome.sidePanel.open({ windowId: (await chrome.windows.getCurrent()).id });
+    try {
+      const window = await chrome.windows.getCurrent();
+      await chrome.sidePanel.open({ windowId: window.id });
+    } catch (e) {
+      console.warn('[AI Assistant] Could not toggle side panel:', e.message);
+    }
   }
 
   async updateConfig(config) {
     await this.storage.set('ai_config', config);
-    // Reinitialize AI client
     this.ai = new AIClient({
       provider: config.provider,
       apiKey: config.apiKey,
-      model: config.model || CONFIG.DEFAULT_MODEL
+      model: config.model || CONFIG.DEFAULT_MODEL,
+      baseUrl: config.baseUrl
     });
   }
 }
 
-// Initialize service
 const assistant = new AIBrowserAssistant();
 assistant.init();
 
-// Side panel behavior
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
