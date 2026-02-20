@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - AI Browser Assistant</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a href="./" class="logo">GroLab</a>
+      <div class="nav-links">
+        <a href="./#features">Features</a>
+        <a href="./#install">Install</a>
+        <a href="https://github.com/grolab/ai-browser-extension">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="features" style="padding-top: 60px;">
+    <div class="container" style="max-width: 720px;">
+      <h2 style="text-align: left; margin-bottom: 32px;">Privacy Policy</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 24px;">Last updated: January 2025</p>
+
+      <div style="color: var(--text-secondary); line-height: 1.8;">
+        <h3 style="color: var(--text); margin: 24px 0 12px;">Data Collection</h3>
+        <p>AI Browser Assistant does <strong style="color: var(--text);">not</strong> collect, store, or transmit any user data to GroLab or any third-party servers. All data processing happens locally in your browser.</p>
+
+        <h3 style="color: var(--text); margin: 24px 0 12px;">API Keys</h3>
+        <p>Your API keys are stored exclusively in Chrome's local storage on your device. They are never sent to our servers and are only used to authenticate directly with your chosen AI provider (OpenAI, Anthropic, or your local Ollama instance).</p>
+
+        <h3 style="color: var(--text); margin: 24px 0 12px;">Page Content</h3>
+        <p>When you interact with the assistant, page content (text, structure, URLs) is sent directly from your browser to your configured AI provider's API. This data passes through the AI provider's servers according to their own privacy policies:</p>
+        <p style="margin-top: 8px;">
+          • <a href="https://openai.com/policies/privacy-policy" style="color: var(--primary);">OpenAI Privacy Policy</a><br>
+          • <a href="https://www.anthropic.com/privacy" style="color: var(--primary);">Anthropic Privacy Policy</a>
+        </p>
+        <p style="margin-top: 8px;">If you use a local LLM (Ollama), all data stays entirely on your machine.</p>
+
+        <h3 style="color: var(--text); margin: 24px 0 12px;">Permissions</h3>
+        <p>The extension requests these Chrome permissions:</p>
+        <p style="margin-top: 8px;">
+          • <strong style="color: var(--text);">activeTab / tabs:</strong> Access the current tab's URL and title for context<br>
+          • <strong style="color: var(--text);">scripting:</strong> Inject content scripts for page interaction<br>
+          • <strong style="color: var(--text);">storage:</strong> Save your settings locally<br>
+          • <strong style="color: var(--text);">sidePanel:</strong> Display the assistant interface<br>
+          • <strong style="color: var(--text);">host_permissions:</strong> Interact with page content on any site you visit
+        </p>
+
+        <h3 style="color: var(--text); margin: 24px 0 12px;">Open Source</h3>
+        <p>This extension is fully open source. You can review all code at <a href="https://github.com/grolab/ai-browser-extension" style="color: var(--primary);">github.com/grolab/ai-browser-extension</a> to verify these privacy claims.</p>
+
+        <h3 style="color: var(--text); margin: 24px 0 12px;">Contact</h3>
+        <p>For privacy concerns, open an issue on <a href="https://github.com/grolab/ai-browser-extension/issues" style="color: var(--primary);">GitHub</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2024 GroLab. Open source under MIT License.</p>
+      <p>
+        <a href="./">Home</a> •
+        <a href="https://github.com/grolab/ai-browser-extension/issues">Report Issue</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
