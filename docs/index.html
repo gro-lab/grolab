@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Browser Assistant - GroLab</title>
+  <meta name="description" content="AI-powered browser extension for smart web automation and assistance">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav">
+      <div class="container">
+        <a href="/" class="logo">GroLab</a>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#install">Install</a>
+          <a href="https://github.com/grolab/ai-browser-extension">GitHub</a>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="hero-content">
+      <div class="container">
+        <div class="badge">Version {{VERSION}} • {{BUILD_DATE}}</div>
+        <h1>AI Browser Assistant</h1>
+        <p class="subtitle">Your intelligent companion for smarter web browsing. Automate tasks, extract data, and navigate with AI-powered assistance.</p>
+        <div class="cta-group">
+          <a href="downloads/ai-browser-extension.zip" class="btn btn-primary">
+            <span>⬇️ Download Extension</span>
+          </a>
+          <a href="https://github.com/grolab/ai-browser-extension" class="btn btn-secondary">
+            <span>📖 View on GitHub</span>
+          </a>
+        </div>
+        <div class="meta">
+          <span>✓ Free & Open Source</span>
+          <span>✓ Privacy First</span>
+          <span>✓ Chrome & Edge</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="demo" id="demo">
+    <div class="container">
+      <div class="demo-window">
+        <div class="demo-header">
+          <div class="demo-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="demo-title">AI Assistant Side Panel</div>
+        </div>
+        <div class="demo-content">
+          <div class="chat-mock">
+            <div class="message assistant">
+              <strong>AI Assistant</strong>
+              <p>I can help you navigate this page. What would you like to do?</p>
+            </div>
+            <div class="message user">
+              <strong>You</strong>
+              <p>Find the pricing information</p>
+            </div>
+            <div class="message assistant">
+              <strong>AI Assistant</strong>
+              <p>I'll search for pricing information on this page...</p>
+              <div class="action-result">
+                <span class="success">✓ Found 3 pricing sections</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="container">
+      <h2>Features</h2>
+      <div class="grid">
+        <div class="feature">
+          <div class="icon">🤖</div>
+          <h3>Smart Automation</h3>
+          <p>Click elements, fill forms, and navigate pages using natural language commands.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">📊</div>
+          <h3>Data Extraction</h3>
+          <p>Automatically extract structured data from any webpage with AI-powered scraping.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">💬</div>
+          <h3>Contextual Chat</h3>
+          <p>Ask questions about page content and get instant, relevant answers.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🔒</div>
+          <h3>Privacy First</h3>
+          <p>Your API keys stay local. No data is sent to our servers.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">⚡</div>
+          <h3>Multiple AI Providers</h3>
+          <p>Works with OpenAI, Anthropic Claude, or local LLMs via Ollama.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🎯</div>
+          <h3>Visual Feedback</h3>
+          <p>See exactly what the AI is doing with highlighted elements and smooth animations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="install" id="install">
+    <div class="container">
+      <h2>Installation</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Download</h3>
+          <p>Download the extension ZIP file from the button above.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Extract</h3>
+          <p>Unzip the file to a folder on your computer.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Load Extension</h3>
+          <p>Open Chrome Extensions, enable Developer Mode, and click "Load Unpacked".</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3>Configure</h3>
+          <p>Click the extension icon, open settings, and add your AI API key.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2024 GroLab. Open source under MIT License.</p>
+      <p>
+        <a href="privacy.html">Privacy Policy</a> • 
+        <a href="https://github.com/grolab/ai-browser-extension/issues">Report Issue</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

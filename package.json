@@ -1,20 +1,49 @@
 {
-  "name": "grolab",
-  "private": true,
-  "version": "0.1.0",
-  "description": "Grolab — Personal Web Engineering Lab",
-  "type": "module",
+  "name": "ai-browser-extension",
+  "version": "1.0.0",
+  "description": "AI-powered web browsing assistant",
+  "main": "src/background.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "node scripts/build.js",
+    "build:watch": "node scripts/build.js --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "dev": "npm run build:watch",
+    "clean": "rm -rf dist/",
+    "package": "npm run build && cd dist/extension && zip -r ../packaged/ai-browser-extension.zip ."
   },
-  "dependencies": {
-    "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grolab/ai-browser-extension.git"
   },
+  "keywords": [
+    "browser-extension",
+    "ai",
+    "assistant",
+    "automation",
+    "chrome-extension",
+    "productivity"
+  ],
+  "author": "GroLab",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/grolab/ai-browser-extension/issues"
+  },
+  "homepage": "https://grolab.work/ai-browser-extension",
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
-    "vite": "^5.2.0"
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "fs-extra": "^11.2.0",
+    "chokidar": "^3.6.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    }
   }
 }

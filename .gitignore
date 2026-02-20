@@ -1,25 +1,40 @@
 # Dependencies
 node_modules/
+vendor/
 
-# Build output
+# Build outputs
 dist/
+build/
+_site/
 
 # Environment
 .env
 .env.local
-.env.*.local
 
-# Editor
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
 
 # Logs
 *.log
 npm-debug.log*
+
+# Testing
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Extension packages (built in CI)
+*.zip
+
+# Jekyll
+.jekyll-cache/
+.jekyll-metadata
