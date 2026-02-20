@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,11 +22,7 @@
       --radius-sm: 8px;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -41,605 +36,237 @@
       line-height: 1.5;
     }
 
-    /* Header */
     .header {
-      padding: 16px;
+      padding: 14px 16px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
-
     .header-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
+    .brand { display: flex; align-items: center; gap: 10px; }
     .logo {
-      width: 32px;
-      height: 32px;
+      width: 30px; height: 30px;
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 700;
-      font-size: 14px;
-      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700; font-size: 13px;
+      box-shadow: 0 2px 8px rgba(99,102,241,0.3);
     }
-
-    .brand-text {
-      font-weight: 600;
-      font-size: 16px;
-      color: var(--text);
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 8px;
-    }
-
+    .brand-text { font-weight: 600; font-size: 15px; }
+    .header-actions { display: flex; gap: 6px; }
     .icon-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
+      width: 30px; height: 30px; border-radius: 8px; border: none;
+      background: transparent; color: var(--text-secondary); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; font-size: 16px;
     }
+    .icon-btn:hover { background: var(--surface-hover); color: var(--text); }
 
-    .icon-btn:hover {
-      background: var(--surface-hover);
-      color: var(--text);
-    }
-
-    /* Quick Actions */
-    .quick-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
+    .quick-actions { display: flex; gap: 6px; flex-wrap: wrap; }
     .chip {
-      padding: 6px 12px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      background: white;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text-secondary);
-      font-weight: 500;
+      padding: 5px 10px; border-radius: 16px; border: 1px solid var(--border);
+      background: white; font-size: 12px; cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; gap: 5px;
+      color: var(--text-secondary); font-weight: 500;
     }
+    .chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+    .chip:active { transform: scale(0.96); }
 
-    .chip:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-      background: var(--primary-light);
-    }
-
-    .chip:active {
-      transform: scale(0.95);
-    }
-
-    /* Page Context */
     .page-context {
-      padding: 10px 16px;
+      padding: 8px 16px;
       background: linear-gradient(90deg, #eff6ff, #f0f9ff);
       border-bottom: 1px solid #dbeafe;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
-      color: #1e40af;
-      flex-shrink: 0;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: #1e40af; flex-shrink: 0;
     }
-
-    .page-context.hidden {
-      display: none;
-    }
-
-    .page-icon {
-      width: 16px;
-      height: 16px;
-      opacity: 0.7;
-    }
-
+    .page-context.hidden { display: none; }
+    .page-icon { width: 14px; height: 14px; opacity: 0.7; }
     .page-title {
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-weight: 500;
+      flex: 1; white-space: nowrap; overflow: hidden;
+      text-overflow: ellipsis; font-weight: 500;
     }
-
-    .page-actions {
-      display: flex;
-      gap: 4px;
-    }
-
     .page-action-btn {
-      padding: 4px 8px;
-      border-radius: 4px;
-      border: none;
-      background: rgba(255,255,255,0.5);
-      font-size: 11px;
-      cursor: pointer;
-      color: #1e40af;
+      padding: 3px 8px; border-radius: 4px; border: none;
+      background: rgba(255,255,255,0.5); font-size: 11px;
+      cursor: pointer; color: #1e40af;
     }
+    .page-action-btn:hover { background: rgba(255,255,255,0.9); }
 
-    .page-action-btn:hover {
-      background: rgba(255,255,255,0.9);
-    }
-
-    /* Chat Container */
     .chat-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+      flex: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 14px;
       scroll-behavior: smooth;
     }
+    .welcome-message { text-align: center; padding: 32px 20px; color: var(--text-secondary); }
+    .welcome-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
+    .welcome-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .welcome-text { font-size: 13px; line-height: 1.6; max-width: 260px; margin: 0 auto; }
 
-    .welcome-message {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-secondary);
+    .message { max-width: 92%; animation: msgSlide 0.25s ease; }
+    @keyframes msgSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-
-    .welcome-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
-    .welcome-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-
-    .welcome-text {
-      font-size: 14px;
-      line-height: 1.6;
-      max-width: 280px;
-      margin: 0 auto;
-    }
-
-    .message {
-      max-width: 92%;
-      animation: messageSlide 0.3s ease;
-    }
-
-    @keyframes messageSlide {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
     .message-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
-      font-size: 12px;
-      font-weight: 600;
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 3px; font-size: 11px; font-weight: 600;
     }
-
-    .message.user {
-      align-self: flex-end;
-    }
-
-    .message.user .message-header {
-      justify-content: flex-end;
-      color: var(--primary);
-    }
-
-    .message.assistant .message-header {
-      color: var(--text-secondary);
-    }
-
+    .message.user { align-self: flex-end; }
+    .message.user .message-header { justify-content: flex-end; color: var(--primary); }
+    .message.assistant .message-header { color: var(--text-secondary); }
     .message-content {
-      padding: 12px 14px;
-      border-radius: var(--radius);
-      font-size: 14px;
-      line-height: 1.6;
-      word-wrap: break-word;
+      padding: 10px 13px; border-radius: var(--radius);
+      font-size: 13px; line-height: 1.6; word-wrap: break-word;
     }
-
     .message.user .message-content {
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      border-bottom-right-radius: 4px;
-      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+      color: white; border-bottom-right-radius: 4px;
+      box-shadow: 0 2px 8px rgba(99,102,241,0.25);
     }
-
     .message.assistant .message-content {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--surface); border: 1px solid var(--border);
       border-bottom-left-radius: 4px;
     }
-
-    .message-content p {
-      margin-bottom: 8px;
-    }
-
-    .message-content p:last-child {
-      margin-bottom: 0;
-    }
-
+    .message-content p { margin-bottom: 6px; }
+    .message-content p:last-child { margin-bottom: 0; }
     .message-content code {
-      background: rgba(0,0,0,0.05);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: 'Monaco', 'Menlo', monospace;
-      font-size: 12px;
+      background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px;
+      font-family: 'Monaco','Menlo',monospace; font-size: 12px;
     }
+    .message.user .message-content code { background: rgba(255,255,255,0.2); }
+    .message-content ul, .message-content ol { margin: 6px 0 6px 16px; }
+    .message-content li { margin-bottom: 2px; }
+    .message-content a { color: inherit; text-decoration: underline; }
 
-    .message.user .message-content code {
-      background: rgba(255,255,255,0.2);
-    }
-
-    /* Loading State */
     .loading-indicator {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 12px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      border-bottom-left-radius: 4px;
-      width: fit-content;
+      display: flex; align-items: center; gap: 4px;
+      padding: 10px 14px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      border-bottom-left-radius: 4px; width: fit-content;
     }
-
     .typing-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--text-secondary);
-      border-radius: 50%;
-      animation: typingBounce 1.4s infinite ease-in-out both;
+      width: 7px; height: 7px; background: var(--text-secondary);
+      border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both;
     }
-
     .typing-dot:nth-child(1) { animation-delay: -0.32s; }
     .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-
-    @keyframes typingBounce {
-      0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; }
       40% { transform: scale(1); opacity: 1; }
     }
 
-    /* Action Cards */
     .action-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px;
-      margin-top: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      background: white; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px; margin-top: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
-
     .action-card-title {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 10px; font-weight: 600; color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 6px; display: flex; align-items: center; gap: 5px;
     }
-
-    .action-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
+    .action-list { display: flex; flex-direction: column; gap: 4px; }
     .action-btn {
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 13px;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.2s;
-      color: var(--text);
+      padding: 8px 10px; border: 1px solid var(--border);
+      background: var(--surface); border-radius: var(--radius-sm);
+      cursor: default; font-size: 12px; text-align: left;
+      display: flex; align-items: center; gap: 8px; color: var(--text);
     }
+    .action-btn.success { border-color: var(--success); background: #ecfdf5; color: #065f46; }
+    .action-btn.error { border-color: var(--error); background: #fef2f2; color: #991b1b; }
 
-    .action-btn:hover {
-      background: var(--primary-light);
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .action-btn.success {
-      border-color: var(--success);
-      background: #ecfdf5;
-      color: var(--success);
-    }
-
-    .action-btn.error {
-      border-color: var(--error);
-      background: #fef2f2;
-      color: var(--error);
-    }
-
-    /* Input Area */
     .input-container {
-      padding: 16px;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      flex-shrink: 0;
+      padding: 12px 16px; background: var(--surface);
+      border-top: 1px solid var(--border); flex-shrink: 0;
     }
-
     .input-wrapper {
-      display: flex;
-      gap: 10px;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 6px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      transition: box-shadow 0.2s;
+      display: flex; gap: 8px; background: white;
+      border: 1px solid var(--border); border-radius: 24px;
+      padding: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      transition: box-shadow 0.2s, border-color 0.2s;
     }
-
     .input-wrapper:focus-within {
-      box-shadow: 0 0 0 3px var(--primary-light);
-      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light); border-color: var(--primary);
     }
-
     #message-input {
-      flex: 1;
-      border: none;
-      background: none;
-      padding: 8px 12px;
-      font-size: 14px;
-      outline: none;
-      color: var(--text);
+      flex: 1; border: none; background: none;
+      padding: 7px 12px; font-size: 14px; outline: none; color: var(--text);
     }
-
-    #message-input::placeholder {
-      color: var(--text-secondary);
-    }
-
+    #message-input::placeholder { color: var(--text-secondary); }
     #send-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: none;
-      background: var(--primary);
-      color: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      flex-shrink: 0;
+      width: 34px; height: 34px; border-radius: 50%; border: none;
+      background: var(--primary); color: white; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; flex-shrink: 0;
     }
+    #send-btn:hover:not(:disabled) { background: var(--primary-dark); transform: scale(1.05); }
+    #send-btn:disabled { background: var(--border); cursor: not-allowed; opacity: 0.6; }
 
-    #send-btn:hover:not(:disabled) {
-      background: var(--primary-dark);
-      transform: scale(1.05);
-    }
-
-    #send-btn:disabled {
-      background: var(--border);
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-
-    /* Settings Modal */
     .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      backdrop-filter: blur(4px);
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      display: none; align-items: center; justify-content: center;
+      z-index: 1000; backdrop-filter: blur(4px);
     }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
+    .modal-overlay.active { display: flex; }
     .modal {
-      background: white;
-      border-radius: var(--radius);
-      width: 90%;
-      max-width: 400px;
-      max-height: 80vh;
-      overflow: hidden;
+      background: white; border-radius: var(--radius); width: 92%;
+      max-width: 380px; max-height: 85vh; overflow: hidden;
       box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-      animation: modalSlide 0.3s ease;
+      animation: modalIn 0.2s ease;
     }
-
-    @keyframes modalSlide {
-      from {
-        opacity: 0;
-        transform: scale(0.95) translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.96) translateY(-10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
     }
-
     .modal-header {
-      padding: 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      padding: 14px 16px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
     }
-
-    .modal-title {
-      font-size: 16px;
-      font-weight: 600;
-    }
-
+    .modal-title { font-size: 15px; font-weight: 600; }
     .modal-close {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
+      width: 28px; height: 28px; border-radius: 6px; border: none;
+      background: transparent; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-secondary); font-size: 16px;
     }
+    .modal-close:hover { background: var(--surface); }
+    .modal-body { padding: 16px; overflow-y: auto; }
 
-    .modal-close:hover {
-      background: var(--surface);
-    }
-
-    .modal-body {
-      padding: 16px;
-      overflow-y: auto;
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 6px;
-      color: var(--text);
-    }
-
+    .form-group { margin-bottom: 14px; }
+    .form-group.hidden { display: none; }
+    .form-label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 5px; }
     .form-input, .form-select {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
+      width: 100%; padding: 9px 11px; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); font-size: 13px; outline: none;
+      transition: border-color 0.15s;
     }
-
-    .form-input:focus, .form-select:focus {
-      border-color: var(--primary);
-    }
-
-    .form-hint {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 4px;
-    }
-
+    .form-input:focus, .form-select:focus { border-color: var(--primary); }
+    .form-hint { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
     .btn-primary {
-      width: 100%;
-      padding: 12px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s;
+      width: 100%; padding: 11px; background: var(--primary); color: white;
+      border: none; border-radius: var(--radius-sm); font-size: 14px;
+      font-weight: 500; cursor: pointer; transition: background 0.15s;
     }
+    .btn-primary:hover { background: var(--primary-dark); }
 
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
-
-    /* Error/Status Messages */
     .status-bar {
-      padding: 8px 16px;
-      font-size: 12px;
-      display: none;
-      align-items: center;
-      gap: 8px;
+      padding: 6px 16px; font-size: 11px; display: none;
+      align-items: center; gap: 6px;
     }
+    .status-bar.error { display: flex; background: #fef2f2; color: var(--error); border-bottom: 1px solid #fecaca; }
+    .status-bar.success { display: flex; background: #ecfdf5; color: var(--success); border-bottom: 1px solid #a7f3d0; }
 
-    .status-bar.error {
-      display: flex;
-      background: #fef2f2;
-      color: var(--error);
-      border-bottom: 1px solid #fecaca;
-    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
 
-    .status-bar.success {
-      display: flex;
-      background: #ecfdf5;
-      color: var(--success);
-      border-bottom: 1px solid #a7f3d0;
-    }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #cbd5e1;
-    }
-
-    /* Utility */
-    .hidden {
-      display: none !important;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
-    .mt-2 {
-      margin-top: 8px;
-    }
-
-    .mb-2 {
-      margin-bottom: 8px;
-    }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -658,7 +285,7 @@
       <button class="chip" data-action="summarize">📄 Summarize</button>
       <button class="chip" data-action="extract">📊 Extract</button>
       <button class="chip" data-action="links">🔗 Links</button>
-      <button class="chip" data-action="form">📝 Fill Form</button>
+      <button class="chip" data-action="form">📝 Forms</button>
     </div>
   </div>
 
@@ -670,26 +297,26 @@
       <polyline points="14 2 14 8 20 8"></polyline>
     </svg>
     <span class="page-title" id="page-title">Loading...</span>
-    <div class="page-actions">
-      <button class="page-action-btn" id="refresh-context">Refresh</button>
+    <div>
+      <button class="page-action-btn" id="refresh-context">↻ Refresh</button>
     </div>
   </div>
 
   <div class="chat-container" id="chat-history">
     <div class="welcome-message">
       <div class="welcome-icon">🤖</div>
-      <div class="welcome-title">Welcome to AI Browser Assistant</div>
+      <div class="welcome-title">AI Browser Assistant</div>
       <div class="welcome-text">
-        I can help you navigate websites, fill forms, extract data, and answer questions about any page you're viewing.
+        I can help you navigate websites, fill forms, extract data, and answer questions about any page.
       </div>
     </div>
   </div>
 
   <div class="input-container">
     <div class="input-wrapper">
-      <input type="text" id="message-input" placeholder="Ask me anything..." autocomplete="off">
+      <input type="text" id="message-input" placeholder="Ask me anything about this page..." autocomplete="off">
       <button id="send-btn" title="Send message">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="22" y1="2" x2="11" y2="13"></line>
           <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
         </svg>
@@ -697,7 +324,6 @@
     </div>
   </div>
 
-  <!-- Settings Modal -->
   <div class="modal-overlay" id="settings-modal">
     <div class="modal">
       <div class="modal-header">
@@ -713,20 +339,26 @@
             <option value="local">Local (Ollama)</option>
           </select>
         </div>
-        
-        <div class="form-group">
+
+        <div class="form-group" id="api-key-group">
           <label class="form-label">API Key</label>
           <input type="password" class="form-input" id="api-key-input" placeholder="sk-...">
-          <div class="form-hint">Your API key is stored locally and never shared.</div>
+          <div class="form-hint">Stored locally, never sent to external servers.</div>
+        </div>
+
+        <div class="form-group hidden" id="base-url-group">
+          <label class="form-label">Ollama URL</label>
+          <input type="text" class="form-input" id="base-url-input" placeholder="http://localhost:11434">
+          <div class="form-hint">Default: http://localhost:11434</div>
         </div>
 
         <div class="form-group">
           <label class="form-label">Model</label>
           <select class="form-select" id="model-select">
             <option value="gpt-4-turbo-preview">GPT-4 Turbo</option>
+            <option value="gpt-4o">GPT-4o</option>
+            <option value="gpt-4o-mini">GPT-4o Mini</option>
             <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-            <option value="claude-3-opus-20240229">Claude 3 Opus</option>
-            <option value="claude-3-sonnet-20240229">Claude 3 Sonnet</option>
           </select>
         </div>
 
