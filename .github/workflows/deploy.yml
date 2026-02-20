@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write      # Required for creating releases
+  contents: write
   pages: write
   id-token: write
 
@@ -19,7 +19,7 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,6 +36,9 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Generate icons
+        run: npm run icons
+
       - name: Build extension
         run: npm run build
 
@@ -48,71 +51,65 @@ jobs:
 
       - name: Generate version info
         run: |
-          echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
-          echo "BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_ENV
+          VERSION=$(node -p "require('./package.json').version")
+          BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
 
       - name: Update docs with version info
         run: |
-          sed -i "s/{{VERSION}}/${{ env.VERSION }}/g" docs/index.html
-          sed -i "s/{{BUILD_DATE}}/${{ env.BUILD_DATE }}/g" docs/index.html
-          sed -i "s/{{GITHUB_SHA}}/${{ github.sha }}/g" docs/index.html
+          sed -i "s/{{VERSION}}/${{ env.VERSION }}/g" docs/index.html || true
+          sed -i "s/{{BUILD_DATE}}/${{ env.BUILD_DATE }}/g" docs/index.html || true
+          sed -i "s/{{GITHUB_SHA}}/${{ github.sha }}/g" docs/index.html || true
 
       - name: Copy extension to docs for download
         run: |
           mkdir -p docs/downloads
           cp dist/packaged/ai-browser-extension.zip docs/downloads/
-          cp -r dist/extension docs/downloads/source
 
       - name: Setup Pages
+        if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v4
 
       - name: Build with Jekyll
+        if: github.event_name != 'pull_request'
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./docs
           destination: ./_site
 
-      - name: Upload artifact
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./_site
 
       - name: Deploy to GitHub Pages
+        if: github.event_name != 'pull_request'
         id: deployment
         uses: actions/deploy-pages@v4
 
       - name: Create Release
-        if: github.ref == 'refs/heads/main'
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION }}
-          release_name: Release v${{ env.VERSION }}
+          name: Release v${{ env.VERSION }}
           draft: false
           prerelease: false
+          files: dist/packaged/ai-browser-extension.zip
           body: |
             ## AI Browser Extension v${{ env.VERSION }}
-            
-            ### Installation
-            1. Download `ai-browser-extension.zip` from Assets
-            2. Extract the ZIP file
-            3. Open Chrome → Extensions → Developer Mode → Load Unpacked
-            4. Select the extracted folder
-            
-            ### Live Demo
-            🌐 https://grolab.work/ai-browser-extension/
-            
-            ### Changes
-            See [CHANGELOG.md](CHANGELOG.md) for details.
 
-      - name: Upload Release Asset
-        if: github.ref == 'refs/heads/main'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/packaged/ai-browser-extension.zip
-          asset_name: ai-browser-extension-v${{ env.VERSION }}.zip
-          asset_content_type: application/zip
+            ### Installation
+            1. Download `ai-browser-extension.zip` from Assets below
+            2. Extract the ZIP file
+            3. Open Chrome → `chrome://extensions/` → Enable Developer Mode
+            4. Click "Load Unpacked" and select the extracted folder
+            5. Click the extension icon → Settings → Add your API key
+
+            ### Live Site
+            🌐 https://grolab.work/ai-browser-extension/
+
+            ### Changes
+            See commit history for details.
