@@ -5,25 +5,26 @@
   "description": "AI-powered web browsing assistant with smart automation",
   "author": "GroLab",
   "homepage_url": "https://grolab.work/ai-browser-extension",
-  
+
   "permissions": [
     "activeTab",
     "scripting",
     "storage",
     "tabs",
     "sidePanel",
-    "alarms"
+    "alarms",
+    "webNavigation"
   ],
-  
+
   "host_permissions": [
     "<all_urls>"
   ],
-  
+
   "background": {
     "service_worker": "background.js",
     "type": "module"
   },
-  
+
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -33,34 +34,33 @@
       "all_frames": false
     }
   ],
-  
+
   "side_panel": {
     "default_path": "sidepanel.html"
   },
-  
+
   "action": {
     "default_title": "Open AI Assistant",
-    "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     }
   },
-  
+
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  
+
   "web_accessible_resources": [
     {
-      "resources": ["injected.js", "config.js"],
+      "resources": ["config.js"],
       "matches": ["<all_urls>"]
     }
   ],
-  
+
   "commands": {
     "_execute_action": {
       "suggested_key": {
