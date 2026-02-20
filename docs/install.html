@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Install - AI Browser Assistant</title>
+  <meta name="description" content="How to install AI Browser Assistant Chrome extension">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a href="./" class="logo">GroLab</a>
+      <div class="nav-links">
+        <a href="./#features">Features</a>
+        <a href="./#install">Install</a>
+        <a href="https://github.com/grolab/ai-browser-extension">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="features" style="padding-top: 60px;">
+    <div class="container">
+      <h2>Installation Guide</h2>
+
+      <div class="steps" style="margin-bottom: 60px;">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Download</h3>
+          <p>Get the latest extension package from the button below or from <a href="https://github.com/grolab/ai-browser-extension/releases" style="color: var(--primary);">GitHub Releases</a>.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Extract</h3>
+          <p>Unzip <code>ai-browser-extension.zip</code> to a permanent folder on your computer. Don't delete this folder.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Load in Chrome</h3>
+          <p>Open <code>chrome://extensions/</code> in Chrome. Enable <strong>Developer Mode</strong> (top right). Click <strong>Load Unpacked</strong> and select the extracted folder.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3>Configure API Key</h3>
+          <p>Click the extension icon in the toolbar. Open Settings (⚙️). Choose your AI provider and paste your API key.</p>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-bottom: 40px;">
+        <a href="downloads/ai-browser-extension.zip" class="btn btn-primary">⬇️ Download Extension</a>
+      </div>
+
+      <div class="grid" style="max-width: 800px; margin: 0 auto;">
+        <div class="feature">
+          <div class="icon">🔑</div>
+          <h3>Getting an API Key</h3>
+          <p><strong>OpenAI:</strong> Visit <a href="https://platform.openai.com/api-keys" style="color: var(--primary);">platform.openai.com</a> and create a new key.</p>
+          <p style="margin-top: 8px;"><strong>Anthropic:</strong> Visit <a href="https://console.anthropic.com/" style="color: var(--primary);">console.anthropic.com</a> and generate a key.</p>
+          <p style="margin-top: 8px;"><strong>Local (Ollama):</strong> Install <a href="https://ollama.com" style="color: var(--primary);">Ollama</a> and pull a model. No API key needed.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🔧</div>
+          <h3>Troubleshooting</h3>
+          <p><strong>Extension not loading?</strong> Check chrome://extensions/ for error messages.</p>
+          <p style="margin-top: 8px;"><strong>AI not responding?</strong> Verify your API key is correct in settings. Check the background console for errors.</p>
+          <p style="margin-top: 8px;"><strong>Actions not working?</strong> Some sites block content scripts. Try refreshing the page.</p>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 40px;">
+        <p style="color: var(--text-secondary);">Also works on Microsoft Edge and other Chromium-based browsers.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2024 GroLab. Open source under MIT License.</p>
+      <p>
+        <a href="privacy.html">Privacy Policy</a> •
+        <a href="https://github.com/grolab/ai-browser-extension/issues">Report Issue</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
